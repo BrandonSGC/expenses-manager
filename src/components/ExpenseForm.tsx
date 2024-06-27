@@ -1,10 +1,11 @@
 import { ChangeEvent, useState } from "react";
 import DatePicker from "react-date-picker";
-import "react-calendar/dist/Calendar.css";
-import "react-date-picker/dist/DatePicker.css";
 import { DraftExpense, Value } from "../types";
 import { categories } from "../data";
 import { ErrorMessage } from "./";
+import { useBudget } from "../hooks/useBudget";
+import "react-calendar/dist/Calendar.css";
+import "react-date-picker/dist/DatePicker.css";
 
 const initialExpense: DraftExpense = {
   amount: 0,
@@ -15,7 +16,8 @@ const initialExpense: DraftExpense = {
 
 export const ExpenseForm = () => {
   const [expense, setExpense] = useState<DraftExpense>(initialExpense);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const { dispatch } = useBudget();
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
@@ -37,12 +39,17 @@ export const ExpenseForm = () => {
     e.preventDefault();
 
     // Validate
-    if (Object.values(expense).includes('' || 0)) {
-      setError('All fields are required');
+    if (Object.values(expense).includes("" || 0)) {
+      setError("All fields are required");
       return;
     }
-    
-  }
+
+    // Add expense.
+    dispatch({ type: "addExpense", payload: { expense } });
+
+    // Clear form and close modal.
+    setExpense(initialExpense);
+  };
 
   return (
     <form className="space-y-5" onSubmit={handleSubmit}>
