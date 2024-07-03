@@ -15,11 +15,11 @@ const initialExpense: DraftExpense = {
 };
 
 export const ExpenseForm = () => {
-  const [expense, setExpense] = useState<DraftExpense | Expense>(
+  const [expense, setExpense] = useState<DraftExpense>(
     initialExpense
   );
   const [error, setError] = useState("");
-  const { state, dispatch } = useBudget();
+  const { state, dispatch, available } = useBudget();
 
   useEffect(() => {
     if (state.editingId) {
@@ -52,6 +52,11 @@ export const ExpenseForm = () => {
     // Validate
     if (Object.values(expense).includes("" || 0)) {
       setError("All fields are required");
+      return;
+    }
+    
+    if (expense.amount > available) {
+      setError("Exceeds budget");
       return;
     }
 

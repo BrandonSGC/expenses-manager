@@ -10,13 +10,21 @@ import { useBudget } from "../hooks/useBudget";
 import { ExpenseForm } from "./";
 
 export const ExpenseModal = () => {
-  const { state, dispatch } = useBudget();
+  const { state, dispatch, available } = useBudget();
 
   return (
     <>
       <div className="fixed flex items-center justify-center right-5 bottom-5">
-        <button type="button" onClick={() => dispatch({ type: "showModal" })}>
-          <PlusCircleIcon className="w-16 h-16 text-blue-600 rounded-full" />
+        <button
+          type="button"
+          onClick={() => dispatch({ type: "showModal" })}
+          disabled={available === 0}
+        >
+          <PlusCircleIcon
+            className={`rounded-full size-16 disabled:bg-opacity-40 ${
+              available === 0 ? "text-blue-300" : "text-blue-600"
+            }`}
+          />
         </button>
       </div>
 
