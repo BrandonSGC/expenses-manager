@@ -1,6 +1,6 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import DatePicker from "react-date-picker";
-import { DraftExpense, Value } from "../types";
+import { DraftExpense, Expense, Value } from "../types";
 import { categories } from "../data";
 import { ErrorMessage } from "./";
 import { useBudget } from "../hooks/useBudget";
@@ -15,9 +15,20 @@ const initialExpense: DraftExpense = {
 };
 
 export const ExpenseForm = () => {
-  const [expense, setExpense] = useState<DraftExpense>(initialExpense);
+  const [expense, setExpense] = useState<DraftExpense | Expense>(
+    initialExpense
+  );
   const [error, setError] = useState("");
-  const { dispatch } = useBudget();
+  const { state, dispatch } = useBudget();
+
+  useEffect(() => {
+    if (state.editingId) {
+      const editExpense = state.expenses.filter(
+        (expense) => expense.id === state.editingId
+      )[0];
+      setExpense(editExpense);
+    }
+  }, [state.editingId]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
@@ -44,8 +55,15 @@ export const ExpenseForm = () => {
       return;
     }
 
-    // Add expense.
-    dispatch({ type: "addExpense", payload: { expense } });
+    // Add or Update expense.
+    if (state.editingId) {
+      dispatch({
+        type: "updateExpense",
+        payload: { expense: { id: state.editingId, ...expense } },
+      });
+    } else {
+      dispatch({ type: "addExpense", payload: { expense } });
+    }
 
     // Clear form and close modal.
     setExpense(initialExpense);
@@ -123,8 +141,8 @@ export const ExpenseForm = () => {
 
       <input
         type="submit"
-        className="w-full p-2 font-bold text-white uppercase bg-blue-600 rounded-lg cursor-pointer"
-        value="Register expense"
+        className="w-full p-2 font-bold text-white uppercase bg-blue-600 rounded-lg cursor-pointer hover:bg-blue-700"
+        value={state.editingId ? "Edit expense" : "Register expense"}
       />
     </form>
   );
