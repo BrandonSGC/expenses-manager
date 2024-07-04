@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import DatePicker from "react-date-picker";
-import { DraftExpense, Expense, Value } from "../types";
+import { DraftExpense, Value } from "../types";
 import { categories } from "../data";
 import { ErrorMessage } from "./";
 import { useBudget } from "../hooks/useBudget";
@@ -15,18 +15,18 @@ const initialExpense: DraftExpense = {
 };
 
 export const ExpenseForm = () => {
-  const [expense, setExpense] = useState<DraftExpense>(
-    initialExpense
-  );
+  const [expense, setExpense] = useState<DraftExpense>(initialExpense);
+  const [previousAmount, setPreviousAmount] = useState(0);
   const [error, setError] = useState("");
   const { state, dispatch, available } = useBudget();
 
   useEffect(() => {
     if (state.editingId) {
-      const editExpense = state.expenses.filter(
+      const editingExpense = state.expenses.filter(
         (expense) => expense.id === state.editingId
       )[0];
-      setExpense(editExpense);
+      setExpense(editingExpense);
+      setPreviousAmount(editingExpense.amount);
     }
   }, [state.editingId]);
 
@@ -54,8 +54,8 @@ export const ExpenseForm = () => {
       setError("All fields are required");
       return;
     }
-    
-    if (expense.amount > available) {
+
+    if (expense.amount - previousAmount > available) {
       setError("Exceeds budget");
       return;
     }
@@ -72,6 +72,7 @@ export const ExpenseForm = () => {
 
     // Clear form and close modal.
     setExpense(initialExpense);
+    setPreviousAmount(0);
   };
 
   return (
