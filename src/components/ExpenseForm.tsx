@@ -49,12 +49,16 @@ export const ExpenseForm = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Validate
-    if (Object.values(expense).includes("" || 0)) {
+    // Validate form fields
+    if (
+      Object.values(expense).includes("") ||
+      Object.values(expense).includes(0)
+    ) {
       setError("All fields are required");
       return;
     }
 
+    // Validate amount against budget.
     if (expense.amount - previousAmount > available) {
       setError("Exceeds budget");
       return;
@@ -125,7 +129,7 @@ export const ExpenseForm = () => {
           value={expense.category}
           onChange={handleChange}
         >
-          <option value="">-- Select --</option>
+          <option value="">-- Select category --</option>
           {categories.map((cat) => (
             <option key={cat.id} value={cat.id}>
               {cat.name}

@@ -5,6 +5,7 @@ import {
   BudgetState,
   initialState,
 } from "../reducer";
+import { Expense } from "../types";
 
 type BudgetContextProps = {
   state: BudgetState;
@@ -25,7 +26,8 @@ export const BudgetProvider = ({ children }: BudgetProviderProps) => {
   const spent = useMemo(
     () =>
       state.expenses.reduce(
-        (totalExpenses, expense) => totalExpenses + expense.amount,
+        (totalExpenses: number, expense: Expense) =>
+          totalExpenses + expense.amount,
         0
       ),
     [state]

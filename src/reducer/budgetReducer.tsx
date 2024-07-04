@@ -16,26 +16,26 @@ export type BudgetState = {
   budget: number;
   modal: boolean;
   expenses: Expense[];
-  editingId: string;
-  currentCategory: Category['id'];
+  editingId: Expense["id"];
+  currentCategory: Category["id"];
 };
 
 const initialBudget = (): number => {
-  const budget = localStorage.getItem("budget");
-  return budget ? +budget : 0;
+  const localStorageBudget = localStorage.getItem("budget");
+  return localStorageBudget ? +localStorageBudget : 0;
 };
 
-const initialExpenses = (): Expense[] => {
-  const expenses = localStorage.getItem("expenses");
-  return expenses ? JSON.parse(expenses) : [];
+const localStorageExpenses = (): Expense[] => {
+  const localStorageExpenses = localStorage.getItem("expenses");
+  return localStorageExpenses ? JSON.parse(localStorageExpenses) : [];
 };
 
 export const initialState: BudgetState = {
   budget: initialBudget(),
   modal: false,
-  expenses: initialExpenses(),
+  expenses: localStorageExpenses(),
   editingId: "",
-  currentCategory: ""
+  currentCategory: "",
 };
 
 const createExpense = (draftExpense: DraftExpense): Expense => {
@@ -50,55 +50,49 @@ export const budgetReducer = (
   action: BudgetActions
 ) => {
   switch (action.type) {
-    case "addBudget": {
+    case "addBudget":
       return {
         ...state,
         budget: action.payload.budget,
       };
-    }
 
-    case "showModal": {
+    case "showModal":
       return {
         ...state,
         modal: true,
       };
-    }
 
-    case "closeModal": {
+    case "closeModal":
       return {
         ...state,
         modal: false,
         editingId: "",
       };
-    }
 
-    case "addExpense": {
+    case "addExpense":
       const expense = createExpense(action.payload.expense);
       return {
         ...state,
         expenses: [...state.expenses, expense],
         modal: false,
       };
-    }
 
-    case "removeExpense": {
+    case "removeExpense":
       return {
         ...state,
         expenses: state.expenses.filter(
           (expense) => expense.id !== action.payload.id
         ),
       };
-    }
 
-    case "getExpenseById": {
+    case "getExpenseById":
       return {
         ...state,
         editingId: action.payload.id,
         modal: true,
       };
-    }
 
-    case "updateExpense": {
+    case "updateExpense":
       return {
         ...state,
         expenses: state.expenses.map((expense) =>
@@ -109,26 +103,21 @@ export const budgetReducer = (
         modal: false,
         editingId: "",
       };
-    }
 
-    case "resetApp": {
-      return {
-        budget: 0,
-        modal: false,
-        expenses: [],
-        editingId: "",
-      };
-    }
-
-    case "addFilterCategory": {
+    case "resetApp":
       return {
         ...state,
-        currentCategory: action.payload.id
+        budget: 0,
+        expenses: [],
       };
-    }
 
-    default: {
+    case "addFilterCategory":
+      return {
+        ...state,
+        currentCategory: action.payload.id,
+      };
+
+    default:
       return state;
-    }
   }
 };
