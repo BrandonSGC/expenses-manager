@@ -4,7 +4,7 @@ import {
   BudgetTracker,
   ExpenseList,
   ExpenseModal,
-  FilterByCategory
+  FilterByCategory,
 } from "./components";
 import { useBudget } from "./hooks/useBudget";
 
@@ -20,8 +20,8 @@ function App() {
 
   return (
     <>
-      <header className="py-8 bg-blue-600 max-h-72">
-        <h1 className="text-4xl font-black text-center text-white uppercase">
+      <header className="py-8 bg-gradient-to-tr from-violet-400 via-blue-500 to-blue-600 max-h-72">
+        <h1 className="text-4xl font-black text-center text-white">
           Expenses Manager
         </h1>
       </header>
