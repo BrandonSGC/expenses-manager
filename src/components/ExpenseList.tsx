@@ -4,19 +4,26 @@ import { ExpenseDetail } from "./";
 
 export const ExpenseList = () => {
   const {
-    state: { expenses },
+    state: { expenses, currentCategory },
   } = useBudget();
 
-  const isEmpty = useMemo(() => expenses.length === 0, [expenses]);
+  const filteredExpenses = currentCategory
+    ? expenses.filter((expense) => expense.category === currentCategory)
+    : expenses;
+
+  const isEmpty = useMemo(
+    () => filteredExpenses.length === 0,
+    [filteredExpenses]
+  );
   return (
-    <div className="mt-10 ">
+    <div className="p-10 mt-10 bg-white rounded-lg shadow-lg">
       {isEmpty ? (
         <p className="text-2xl font-bold text-gray-600">No expenses yet...</p>
       ) : (
         <>
-          <p className="my-5 text-2xl font-bold text-gray-600">Expenses list</p>
-          {expenses.map((expense) => (
-            <ExpenseDetail key={expense.id} expense={expense}/>
+          <p className="mb-5 text-2xl font-bold text-gray-600">Expenses list</p>
+          {filteredExpenses.map((expense) => (
+            <ExpenseDetail key={expense.id} expense={expense} />
           ))}
         </>
       )}

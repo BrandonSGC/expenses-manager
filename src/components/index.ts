@@ -6,3 +6,4 @@ export * from './ExpenseForm';
 export * from './ErrorMessage';
 export * from './ExpenseList';
 export * from './ExpenseDetail';
+export * from './FilterByCategory';

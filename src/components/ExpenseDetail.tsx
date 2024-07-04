@@ -55,7 +55,7 @@ export const ExpenseDetail = ({ expense }: ExpenseDetailsProps) => {
         leadingActions={leadingActions()}
         trailingActions={trailingActions()}
       >
-        <div className="flex items-center w-full gap-5 p-10 bg-white border-b border-gray-200 shadow-lg">
+        <div className="flex items-center w-full gap-5 py-5 bg-white border-b border-gray-200 shadow-lg md:p-5">
           <div className="">
             <img
               src={`icono_${categoryInfo.icon}.svg`}
